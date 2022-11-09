@@ -1,0 +1,8 @@
+future
+numpy
+librosa
+soundfile
+tqdm
+torch
+torchaudio
+tensorboard
