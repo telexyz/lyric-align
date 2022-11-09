@@ -8,3 +8,4 @@ DALI
 _git
 pytorch_model.bin
 pretrained_models/
+data/public_test/
