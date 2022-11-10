@@ -190,7 +190,7 @@ def move_data_to_device(x, device):
 
     return x.to(device)
 
-def alignment(song_pred, lyrics, idx):
+def alignment(song_pred, lyrics):
     audio_length, num_class = song_pred.shape
     lyrics_int = phone2seq(lyrics)
     lyrics_length = len(lyrics_int)

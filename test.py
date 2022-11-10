@@ -27,6 +27,12 @@ def predict_align(args, model, test_data, device, model_type):
 
     resolution = 256 / 22050 * 3
 
+    # audio, (indices of the first characters/phonemes of the words, * of the lines),
+    # (lyrics in characters/phonemes, song names, audio length in samples)
+    # return [audio], (word_idx, line_idx), (lyrics, audio_name, audio_length)
+    # x, idx, meta = _data
+    
+    count = 0
     with tqdm(total=data_len) as pbar, torch.no_grad():
         for batch_idx, _data in enumerate(dataloader):
             spectrograms, phones, input_lengths, phone_lengths, lyrics = _data
@@ -42,7 +48,7 @@ def predict_align(args, model, test_data, device, model_type):
             # => total_length, num_classes
 
             audio_length = input_lengths[0]
-            words = lyrics[0]
+            words = " ".split(lyrics[0])
             total_length = int(audio_length / args.sr // resolution)
             song_pred = song_pred[:total_length, :]
 
@@ -51,15 +57,16 @@ def predict_align(args, model, test_data, device, model_type):
             song_pred = np.log(np.exp(song_pred) + P_noise)
 
             # dynamic programming alignment
-            word_align, score = utils.alignment(song_pred, words, idx)
+            word_align, score = utils.alignment(song_pred, words)
             print("\t{}:\t{}".format(audio_name, score))
 
             # write
-            with open(os.path.join(args.pred_dir, audio_name + "_align.csv"), 'w') as f:
+            with open(os.path.join(args.pred_dir, count + "_align.csv"), 'w') as f:
                 for j in range(len(word_align)):
                     word = word_align[j]
-                    f.write("{},{},{}\n".format(word[0] * resolution, word[1] * resolution, words[idx[j,0]:idx[j,1]]))
+                    f.write("{},{},{}\n".format(word[0] * resolution, word[1] * resolution, words[j]))
 
+            count += 1
             pbar.update(1)
 
     return 0
