@@ -52,14 +52,8 @@ if __name__ == '__main__':
     parser.add_argument('--cuda', action='store_true',
                         help='Use CUDA (default: False)')
 
-    parser.add_argument('--sepa_dir', type=str, required=True,
-                        help='Where all the separated vocals of Jamendo are stored.')
-
     parser.add_argument('--dataset', type=str, default="jamendo",
                         help='Dataset name')
-
-    parser.add_argument('--hdf_dir', type=str, default="./hdf/",
-                        help='Dataset path')
 
     parser.add_argument('--pred_dir', type=str, required=True,
                         help='Prediction path')
