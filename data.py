@@ -24,9 +24,9 @@ class SongsDataset(Dataset):
     def __getitem__(self, index):
         filename = self.filenames[index]
         audio, _ = load(os.path.join("data", f"{filename}.mp3"), sr=self.sr, mono=True)
-        txt = open(f"data/{filename}.txt", "r").read()
-        phone_seq = phone2seq(g2p(txt))
-        return audio, None, None, phone_seq, None
+        lyric = open(f"data/{filename}.txt", "r").read()
+        phone_seq = phone2seq(g2p(lyric))
+        return audio, None, None, phone_seq, lyric
 
     def __len__(self):
         return self.length

@@ -29,7 +29,7 @@ def predict_align(args, model, test_data, device, model_type):
 
     with tqdm(total=data_len) as pbar, torch.no_grad():
         for batch_idx, _data in enumerate(dataloader):
-            spectrograms, phones, input_lengths, phone_lengths, _ = _data
+            spectrograms, phones, input_lengths, phone_lengths, lyrics = _data
             spectrograms, phones = spectrograms.to(device), phones.to(device)
 
             # predict
@@ -38,8 +38,12 @@ def predict_align(args, model, test_data, device, model_type):
 
             batch_num, output_length, num_classes = all_outputs.shape
 
-            song_pred = all_outputs.data.cpu().numpy().reshape(-1, num_classes) # total_length, num_classes
-            total_length = int(input_lengths[0] / args.sr // resolution)
+            song_pred = all_outputs.data.cpu().numpy().reshape(-1, num_classes) 
+            # => total_length, num_classes
+
+            audio_length = input_lengths[0]
+            words = lyrics[0]
+            total_length = int(audio_length / args.sr // resolution)
             song_pred = song_pred[:total_length, :]
 
             # smoothing
