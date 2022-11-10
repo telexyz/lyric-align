@@ -23,7 +23,7 @@ def predict_align(args, model, test_data, device, model_type):
 
     model.eval()
 
-    data_len = len(train_loader.dataset) // batch_size
+    data_len = len(dataloader.dataset) // batch_size
 
     resolution = 256 / 22050 * 3
 
