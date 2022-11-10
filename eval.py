@@ -1,6 +1,6 @@
 import argparse
 import torch
-from data import JamendoLyricsDataset
+from data import SongsDataset
 from model import AcousticModel
 import utils, test
 
