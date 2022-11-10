@@ -14,7 +14,7 @@ def predict_align(args, model, test_data, device, model_type):
     if not os.path.exists(args.pred_dir): os.makedirs(args.pred_dir)
     
     batch_size = 1
-    
+
     dataloader = torch.utils.data.DataLoader(dataset=test_data,
                                    batch_size=batch_size,
                                    shuffle=False,
@@ -39,7 +39,7 @@ def predict_align(args, model, test_data, device, model_type):
             batch_num, output_length, num_classes = all_outputs.shape
 
             song_pred = all_outputs.data.cpu().numpy().reshape(-1, num_classes) # total_length, num_classes
-            total_length = int(audio_length / args.sr // resolution)
+            total_length = int(input_lengths[0] / args.sr // resolution)
             song_pred = song_pred[:total_length, :]
 
             # smoothing
