@@ -20,8 +20,9 @@ def data_processing(data):
     phones = []
     input_lengths = []
     phone_lengths = []
+    lyrics = []
     # return audio, targets, seq, phone_seq, notes
-    for (waveform, _, _, phone, _) in data:
+    for (waveform, _, _, phone, lyric) in data:
         waveform = torch.Tensor(waveform)
         # convert to Mel
         spec = train_audio_transforms(waveform).squeeze(0).transpose(0, 1)
@@ -30,6 +31,7 @@ def data_processing(data):
         # get phoneme list (mapped to integers)
         phone = torch.Tensor(phone)
         phones.append(phone)
+        lyrics.append(lyric)
 
         # the number 3 here and below is due the the maxpooling along the frequency axis
         input_lengths.append(spec.shape[0] // 3)
@@ -39,7 +41,7 @@ def data_processing(data):
     spectrograms = spectrograms.unsqueeze(1).transpose(2, 3)
     phones = nn.utils.rnn.pad_sequence(phones, batch_first=True)
 
-    return spectrograms, phones, input_lengths, phone_lengths, []
+    return spectrograms, phones, input_lengths, phone_lengths, lyrics
     # https://github.com/jhuang448/LyricsAlignment-MTL/blob/4f8ddb8bf7dd02f0e2e7fb697e84bd0c3db5e5c2/model.py#L47
 
 
