@@ -39,7 +39,7 @@ def main(args):
 
     state = utils.load_model(model, args.load_model, args.cuda)
 
-    val_data = SongsDataset("test", args.sr)
+    test_data = SongsDataset("test", args.sr)
 
     results = test.predict_align(args, model, test_data, device, args.model)
 
