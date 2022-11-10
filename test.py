@@ -8,21 +8,17 @@ from model import train_audio_transforms
 
 from scipy.signal import medfilt
 
-def predict_align(args, model, test_data, device, model_type):
+def predict_align(args, model, dataloader, device, model_type):
 
-    if not os.path.exists(args.pred_dir):
-        os.makedirs(args.pred_dir)
+    if not os.path.exists(args.pred_dir): os.makedirs(args.pred_dir)
 
-    dataloader = torch.utils.data.DataLoader(test_data,
-                                             batch_size=1,
-                                             shuffle=False,
-                                             num_workers=0,
-                                             collate_fn=utils.my_collate)
     model.eval()
 
     resolution = 256 / 22050 * 3
 
-    with tqdm(total=len(test_data)) as pbar, torch.no_grad():
+    data_len = len(dataloader.dataset) // batch_size
+
+    with tqdm(total=len(data_len)) as pbar, torch.no_grad():
         for batch_idx, _data in enumerate(dataloader):
             spectrograms, phones, input_lengths, phone_lengths, _ = _data
             spectrograms, phones = spectrograms.to(device), phones.to(device)
