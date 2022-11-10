@@ -39,7 +39,7 @@ def main(args):
 
     state = utils.load_model(model, args.load_model, args.cuda)
 
-    test_data = JamendoLyricsDataset(args.sr, args.hdf_dir, args.dataset, args.jamendo_dir, args.sepa_dir, unit=args.unit)
+    val_data = SongsDataset("test", args.sr)
 
     results = test.predict_align(args, model, test_data, device, args.model)
 
@@ -51,9 +51,6 @@ if __name__ == '__main__':
 
     parser.add_argument('--cuda', action='store_true',
                         help='Use CUDA (default: False)')
-
-    parser.add_argument('--jamendo_dir', type=str, required=True,
-                        help='Dataset path')
 
     parser.add_argument('--sepa_dir', type=str, required=True,
                         help='Where all the separated vocals of Jamendo are stored.')
