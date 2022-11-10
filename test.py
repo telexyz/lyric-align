@@ -15,7 +15,7 @@ def predict_align(args, model, test_data, device, model_type):
     
     batch_size = 1
     
-    dataloader = data.DataLoader(dataset=test_data,
+    dataloader = torch.utils.data.DataLoader(dataset=test_data,
                                    batch_size=batch_size,
                                    shuffle=False,
                                    worker_init_fn=worker_init_fn,
