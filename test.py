@@ -23,21 +23,12 @@ def predict_align(args, model, test_data, device, model_type):
     resolution = 256 / 22050 * 3
 
     with tqdm(total=len(test_data)) as pbar, torch.no_grad():
-        for example_num, _data in enumerate(dataloader):
-            x, idx, meta = _data
-            idx = idx[0][0] # first sample in the batch (which has only one sample); first element in the tuple (align_idx, line_idx)
-            words, audio_name, audio_length = meta[0]
-
-            # reshape input, prepare mel
-            x = x.reshape(1,1,-1)
-            x = utils.move_data_to_device(x, device)
-            x = x.squeeze(0)
-            x = x.squeeze(1)
-            x = train_audio_transforms.to(device)(x)
-            x = nn.utils.rnn.pad_sequence(x, batch_first=True).unsqueeze(1)
+        for batch_idx, _data in enumerate(dataloader):
+            spectrograms, phones, input_lengths, phone_lengths, _ = _data
+            spectrograms, phones = spectrograms.to(device), phones.to(device)
 
             # predict
-            all_outputs = model(x)
+            all_outputs = model(spectrograms)
             all_outputs = F.log_softmax(all_outputs, dim=2)
 
             batch_num, output_length, num_classes = all_outputs.shape
