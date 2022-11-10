@@ -4,21 +4,30 @@ import numpy as np
 import torch, os
 import torch.nn as nn
 import torch.nn.functional as F
-from model import train_audio_transforms
+from model import train_audio_transforms, data_processing
+from utils import worker_init_fn, load_model
 
 from scipy.signal import medfilt
 
-def predict_align(args, model, dataloader, device, model_type):
+def predict_align(args, model, test_data, device, model_type):
 
     if not os.path.exists(args.pred_dir): os.makedirs(args.pred_dir)
+    
+    batch_size = 1
+    
+    dataloader = data.DataLoader(dataset=test_data,
+                                   batch_size=batch_size,
+                                   shuffle=False,
+                                   worker_init_fn=worker_init_fn,
+                                   collate_fn=lambda x: data_processing(x))
 
     model.eval()
 
+    data_len = len(train_loader.dataset) // batch_size
+
     resolution = 256 / 22050 * 3
 
-    data_len = len(dataloader.dataset) // batch_size
-
-    with tqdm(total=len(data_len)) as pbar, torch.no_grad():
+    with tqdm(total=data_len) as pbar, torch.no_grad():
         for batch_idx, _data in enumerate(dataloader):
             spectrograms, phones, input_lengths, phone_lengths, _ = _data
             spectrograms, phones = spectrograms.to(device), phones.to(device)
